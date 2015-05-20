@@ -76,5 +76,26 @@ public class CharacterController2D : MonoBehaviour {
 		{
 			atSideDoor = true;
 		}
+		if(col.gameObject.tag == "Door")
+		{
+			Door door = col.gameObject.GetComponent<Door>();
+			door.PlayerAtDoor();
+			if(door.GetRoomState() == Door.RoomState.RS_UNOCCUPIED)
+			{
+				//Display interact prompt
+				if(Input.GetKey(KeyCode.E))
+				{
+					door.CallInGirl();
+				}
+			}
+			else if(door.GetRoomState() == Door.RoomState.RS_CLIENT_TRYING_TO_LEAVE)
+			{
+				//Display interact prompt
+				if(Input.GetKey(KeyCode.E))
+				{
+					door.ThrowOutClient();
+				}
+			}
+		}
 	}
 }
