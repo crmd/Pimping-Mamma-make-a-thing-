@@ -7,41 +7,74 @@ public class CharacterController2D : MonoBehaviour {
 	private int curFloor = 0;		//
 	public GameObject[] floors;		//
 	public float offset;			//How far down from the centre point of a room should the player be positioned;
+	public float leftWall = -2.2f;
+	public float rightWall = 2.2f;
+	private float xScale;
+
+	public bool atSideDoor;
 	// Use this for initialization
 	void Start () {
 		transform.position = FloorPos();
+		xScale = transform.localScale.x;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
 		{
-			transform.Translate(new Vector3(-1,0,0) * speed * Time.deltaTime);
+			if(transform.position.x > leftWall)
+			{
+				transform.Translate(new Vector3(-1,0,0) * speed * Time.deltaTime);
+			}
+			transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
 		}
 		if(Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
 		{
-			transform.Translate(new Vector3(1,0,0) * speed * Time.deltaTime);
+			if(transform.position.x < rightWall)
+			{
+				transform.Translate(new Vector3(1,0,0) * speed * Time.deltaTime);
+			}
+			transform.localScale = new Vector3(-xScale, transform.localScale.y, transform.localScale.z);
 		}
 		if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
 		{
-			if(curFloor < 2)
+			if(atSideDoor)
 			{
-				curFloor++;
+				if(curFloor < 2)
+				{
+					curFloor++;
+				}
+				transform.position = FloorPos();
 			}
-			transform.position = FloorPos();
 		}
 		if(Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
 		{
-			if(curFloor > 0)
+			if(atSideDoor)
 			{
-				curFloor--;
+				if(curFloor > 0)
+				{
+					curFloor--;
+				}
+				transform.position = FloorPos();
 			}
-			transform.position = FloorPos();
 		}
+	}
+
+	void LateUpdate()
+	{
+		atSideDoor = false;
 	}
 
 	private Vector2 FloorPos()
 	{
 		return new Vector2(transform.position.x, floors[curFloor].transform.position.y - offset);
+	}
+
+	void OnTriggerStay2D(Collider2D col)
+	{
+		if(col.gameObject.tag == "SideDoor")
+		{
+			atSideDoor = true;
+		}
 	}
 }
