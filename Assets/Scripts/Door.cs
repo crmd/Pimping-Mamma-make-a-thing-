@@ -37,12 +37,14 @@ public class Door : MonoBehaviour {
 	private GameObject interactPrompt;
 
 	private bool playerAtDoor;
+	private Animator npcAnim;
 
 	// Use this for initialization
 	void Start () {
 		light = transform.Find("Light").GetComponent<SpriteRenderer>();
 		anim = GetComponent<Animator>();
 		interactPrompt = transform.Find("eKey").gameObject;
+		npcAnim = transform.Find("NPC").GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -71,6 +73,7 @@ public class Door : MonoBehaviour {
 				{
 					//NPC enters room
 					anim.SetTrigger("ClientEnter");
+					npcAnim.SetTrigger("NPCCreepyGuyEnter");
 					SetStateWithClient();
 					break;
 				}
@@ -87,6 +90,7 @@ public class Door : MonoBehaviour {
 					{
 						SetStateWaiting();
 						anim.SetTrigger("ClientLeave");
+						npcAnim.SetTrigger("NPCCreepyGuyExit");
 					}
 					else
 					{
@@ -104,6 +108,7 @@ public class Door : MonoBehaviour {
 			{
 				//Client leaves the room
 				SetStateWaiting();
+				npcAnim.SetTrigger("NPCCreepyGuyExit");
 				anim.SetTrigger("ClientLeave");
 			}
 			break;
@@ -141,6 +146,7 @@ public class Door : MonoBehaviour {
 		//Get Money
 		SetStateWaiting();
 		anim.SetTrigger("ClientLeave");
+		npcAnim.SetTrigger("NPCCreepyGuyNekkedExit");
 	}
 
 	public RoomState GetRoomState()
@@ -178,5 +184,6 @@ public class Door : MonoBehaviour {
 	{
 		roomState = RoomState.RS_CLIENT_TRYING_TO_LEAVE;
 		timer = leaveWithoutPayingTime;
+
 	}
 }

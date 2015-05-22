@@ -12,14 +12,31 @@ public class CharacterController2D : MonoBehaviour {
 	private float xScale;
 
 	public bool atSideDoor;
+
+	private Animator anim;
+	bool running;
 	// Use this for initialization
 	void Start () {
 		transform.position = FloorPos();
 		xScale = transform.localScale.x;
+		anim = GetComponent<Animator>();
 	}
-	
+
+	void FixedUpdate()
+	{
+		if(running)
+		{
+			anim.SetBool("running", true);
+		}
+		else
+		{
+			anim.SetBool("running", false);
+		}
+	}
+
 	// Update is called once per frame
 	void Update () {
+		running = false;
 		if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
 		{
 			if(transform.position.x > leftWall)
@@ -27,6 +44,7 @@ public class CharacterController2D : MonoBehaviour {
 				transform.Translate(new Vector3(-1,0,0) * speed * Time.deltaTime);
 			}
 			transform.localScale = new Vector3(xScale, transform.localScale.y, transform.localScale.z);
+			running = true;
 		}
 		if(Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
 		{
@@ -35,6 +53,7 @@ public class CharacterController2D : MonoBehaviour {
 				transform.Translate(new Vector3(1,0,0) * speed * Time.deltaTime);
 			}
 			transform.localScale = new Vector3(-xScale, transform.localScale.y, transform.localScale.z);
+			running = true;
 		}
 		if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
 		{
