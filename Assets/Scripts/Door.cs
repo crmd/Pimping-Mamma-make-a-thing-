@@ -39,12 +39,17 @@ public class Door : MonoBehaviour {
 	private bool playerAtDoor;
 	private Animator npcAnim;
 
+	private GameObject gameManager;
+
+	private Animator scoreAnim;
 	// Use this for initialization
 	void Start () {
 		light = transform.Find("Light").GetComponent<SpriteRenderer>();
 		anim = GetComponent<Animator>();
 		interactPrompt = transform.Find("eKey").gameObject;
 		npcAnim = transform.Find("NPC").GetComponent<Animator>();
+		gameManager = GameObject.Find ("GameManager");
+		scoreAnim = transform.Find("AddScore").GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -91,6 +96,8 @@ public class Door : MonoBehaviour {
 						SetStateWaiting();
 						anim.SetTrigger("ClientLeave");
 						npcAnim.SetTrigger("NPCCreepyGuyExit");
+						gameManager.SendMessage("AddScore", CalcMoney());
+						scoreAnim.SetTrigger("AddScore");
 					}
 					else
 					{
@@ -131,9 +138,17 @@ public class Door : MonoBehaviour {
 		playerAtDoor = false;
 	}
 
+	int CalcMoney()
+	{
+		return Random.Range (minPayment, maxPayment);
+	}
+
 	void OnTriggerStay2D()
 	{
-		playerAtDoor = true;
+		if(roomState == RoomState.RS_UNOCCUPIED || roomState == RoomState.RS_CLIENT_TRYING_TO_LEAVE)
+		{
+			playerAtDoor = true;
+		}
 	}
 
 	float RandomPercent()
@@ -145,6 +160,8 @@ public class Door : MonoBehaviour {
 	{
 		//Get Money
 		SetStateWaiting();
+		gameManager.SendMessage("AddScore", CalcMoney());
+		scoreAnim.SetTrigger("AddScore");
 		anim.SetTrigger("ClientLeave");
 		npcAnim.SetTrigger("NPCCreepyGuyNekkedExit");
 	}
@@ -154,10 +171,10 @@ public class Door : MonoBehaviour {
 		return roomState;
 	}
 
-	public void PlayerAtDoor()
-	{
-		playerAtDoor = true;
-	}
+//	public void PlayerAtDoor()
+//	{
+//		playerAtDoor = true;
+//	}
 
 	public void CallInGirl()
 	{

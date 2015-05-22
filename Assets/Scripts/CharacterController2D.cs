@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class CharacterController2D : MonoBehaviour {
-
+	
 	public float speed;				//
 	private int curFloor = 0;		//
 	public GameObject[] floors;		//
@@ -10,9 +10,9 @@ public class CharacterController2D : MonoBehaviour {
 	public float leftWall = -2.2f;
 	public float rightWall = 2.2f;
 	private float xScale;
-
+	
 	public bool atSideDoor;
-
+	
 	private Animator anim;
 	bool running;
 	// Use this for initialization
@@ -21,7 +21,7 @@ public class CharacterController2D : MonoBehaviour {
 		xScale = transform.localScale.x;
 		anim = GetComponent<Animator>();
 	}
-
+	
 	void FixedUpdate()
 	{
 		if(running)
@@ -33,7 +33,7 @@ public class CharacterController2D : MonoBehaviour {
 			anim.SetBool("running", false);
 		}
 	}
-
+	
 	// Update is called once per frame
 	void Update () {
 		running = false;
@@ -78,17 +78,17 @@ public class CharacterController2D : MonoBehaviour {
 			}
 		}
 	}
-
+	
 	void LateUpdate()
 	{
 		atSideDoor = false;
 	}
-
+	
 	private Vector2 FloorPos()
 	{
 		return new Vector2(transform.position.x, floors[curFloor].transform.position.y - offset);
 	}
-
+	
 	void OnTriggerStay2D(Collider2D col)
 	{
 		if(col.gameObject.tag == "SideDoor")
@@ -98,7 +98,7 @@ public class CharacterController2D : MonoBehaviour {
 		if(col.gameObject.tag == "Door")
 		{
 			Door door = col.gameObject.GetComponent<Door>();
-			door.PlayerAtDoor();
+			//door.PlayerAtDoor();
 			if(door.GetRoomState() == Door.RoomState.RS_UNOCCUPIED)
 			{
 				//Display interact prompt
