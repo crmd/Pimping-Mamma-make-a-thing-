@@ -6,7 +6,7 @@ public class CharacterController2D : MonoBehaviour {
 	public float speed;				//
 	private int curFloor = 0;		//
 	public GameObject[] floors;		//
-	public float offset;			//How far down from the centre point of a room should the player be positioned;
+	public float offset;			//How far down from the mid point of a room should the player be positioned;
 	public float leftWall = -2.2f;
 	public float rightWall = 2.2f;
 	private float xScale;
@@ -15,11 +15,14 @@ public class CharacterController2D : MonoBehaviour {
 	
 	private Animator anim;
 	bool running;
+
+	private GameManager gm;
 	// Use this for initialization
 	void Start () {
 		transform.position = FloorPos();
 		xScale = transform.localScale.x;
 		anim = GetComponent<Animator>();
+		gm = GameObject.Find ("GameManager").GetComponent<GameManager>();
 	}
 	
 	void FixedUpdate()
@@ -36,6 +39,11 @@ public class CharacterController2D : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if(gm.GetState() == GameState.GS_HIGHSCORES)
+		{
+			return;
+		}
+
 		running = false;
 		if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
 		{

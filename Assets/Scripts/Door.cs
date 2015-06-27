@@ -39,7 +39,7 @@ public class Door : MonoBehaviour {
 	private bool playerAtDoor;
 	private Animator npcAnim;
 
-	private GameObject gameManager;
+	private GameManager gm;
 
 	private Animator scoreAnim;
 	// Use this for initialization
@@ -48,12 +48,16 @@ public class Door : MonoBehaviour {
 		anim = GetComponent<Animator>();
 		interactPrompt = transform.Find("eKey").gameObject;
 		npcAnim = transform.Find("NPC").GetComponent<Animator>();
-		gameManager = GameObject.Find ("GameManager");
+		gm = GameObject.Find ("GameManager").GetComponent<GameManager>();
 		scoreAnim = transform.Find("AddScore").GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if(gm.GetState() == GameState.GS_HIGHSCORES)
+		{
+			return;
+		}
 		switch(roomState)
 		{
 		case RoomState.RS_UNOCCUPIED:
@@ -96,7 +100,7 @@ public class Door : MonoBehaviour {
 						SetStateWaiting();
 						anim.SetTrigger("ClientLeave");
 						npcAnim.SetTrigger("NPCCreepyGuyExit");
-						gameManager.SendMessage("AddScore", CalcMoney());
+						gm.AddScore(CalcMoney());
 						scoreAnim.SetTrigger("AddScore");
 					}
 					else
@@ -160,7 +164,7 @@ public class Door : MonoBehaviour {
 	{
 		//Get Money
 		SetStateWaiting();
-		gameManager.SendMessage("AddScore", CalcMoney());
+		gm.AddScore(CalcMoney());
 		scoreAnim.SetTrigger("AddScore");
 		anim.SetTrigger("ClientLeave");
 		npcAnim.SetTrigger("NPCCreepyGuyNekkedExit");
